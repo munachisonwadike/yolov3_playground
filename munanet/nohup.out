@@ -1,0 +1,99 @@
+WARNING:root:Setting up a new session...
+  0%|          | 0/183 [00:00<?, ?it/s]
+       
+
+       Notes:
+        1) Disabled code in dataloader/make_data_loader/__init__.py
+         that used SBD since it simply was preventing the code from running
+       
+        2) Set the code in GPU ids that allowed to use multiple GPU's- 
+        double checkt that it does use all GPUs later
+       
+        3) Manually added the context encoding module to the decoder to create munanet
+        Still not sure what the 'lateral' argument from encnets context encoder does
+        so mess with it as True and False in training to see if it improves performance
+        Also not sure why the original encnet paper always casts the return value
+        of a forward function to a tuple and casts back to a list (tensor) when using it
+        so just left it that way for now. Gonna trying putting the context encoder
+        at different stages of the network such as decoder, encoder, and different stages
+        within these. Also ignored the semantic encoding loss since you can't really include it
+        at the encoder stage. Perhaps figure out a way to add a semantic encoding loss later on 
+        as Xiang discussed 
+       
+        4) even when manually adding context encoding modules, the function syncbacth 
+        norm uses c++ and cuda files so you still need to copy the encoding/lib folder 
+        from the PyTorchEncoding repo note that when you import lib from /encoding, you 
+        may need to remount the disk you are working on so that enclibcpu can import properly 
+        https://stackoverflow.com/questions/13502156/what-are-possible-causes-of-failed-to-map-segment-from-shared-object-operation
+        checking out /etc/fstab showed me that I needed to remount ~ .../ mmvc-ad-local-002
+        also note that you need to run the setup.py for the encoding/lib/cpu and encoding/lib/gpu 
+        to install and to run build_ext - this will require getting all the correct pytorch,
+         cuda versions (perhaps pytorch nightly)
+        and even gcc
+
+        5) messed with the number of epochs and used early stopping
+        
+
+            
+Namespace(backbone='resnet', base_size=513, batch_size=8, checkname='deeplab-resnet', crop_size=513, cuda=True, dataset='pascal', epochs=50, eval_interval=1, freeze_bn=False, ft=False, gpu_ids=[0, 1], loss_type='ce', lr=0.007, lr_scheduler='poly', momentum=0.9, nesterov=False, no_cuda=False, no_val=False, out_stride=16, resume=None, seed=1, start_epoch=0, sync_bn=True, test_batch_size=8, use_balanced_weights=False, use_sbd=True, weight_decay=0.0005, workers=4)
+Number of images in train: 1464
+Number of images in val: 1449
+Using poly LR Scheduler!
+Starting Epoch: 0
+Total Epoches: 50
+/home/mmvc/.conda/envs/munachiso/lib/python3.6/site-packages/torch/nn/_reduction.py:47: UserWarning: size_average and reduce args will be deprecated, please use reduction='mean' instead.
+  warnings.warn(warning.format(ret))
+Train loss: 0.326:   0%|          | 0/183 [00:05<?, ?it/s]Train loss: 0.326:   1%|          | 1/183 [00:06<21:07,  6.96s/it]Train loss: 0.321:   1%|          | 1/183 [00:09<21:07,  6.96s/it]Train loss: 0.321:   1%|          | 2/183 [00:09<17:01,  5.64s/it]Traceback (most recent call last):
+  File "/home/mmvc/.conda/envs/munachiso/lib/python3.6/multiprocessing/queues.py", line 240, in _feed
+    send_bytes(obj)
+  File "/home/mmvc/.conda/envs/munachiso/lib/python3.6/multiprocessing/connection.py", line 200, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+  File "/home/mmvc/.conda/envs/munachiso/lib/python3.6/multiprocessing/connection.py", line 404, in _send_bytes
+    self._send(header + buf)
+  File "/home/mmvc/.conda/envs/munachiso/lib/python3.6/multiprocessing/connection.py", line 368, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+
+=>Epoches 0, learning rate = 0.0070,                 previous best = 0.0000
+Traceback (most recent call last):
+  File "train.py", line 367, in <module>
+Traceback (most recent call last):
+  File "/home/mmvc/.conda/envs/munachiso/lib/python3.6/multiprocessing/queues.py", line 240, in _feed
+    send_bytes(obj)
+  File "/home/mmvc/.conda/envs/munachiso/lib/python3.6/multiprocessing/connection.py", line 200, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+  File "/home/mmvc/.conda/envs/munachiso/lib/python3.6/multiprocessing/connection.py", line 404, in _send_bytes
+    self._send(header + buf)
+  File "/home/mmvc/.conda/envs/munachiso/lib/python3.6/multiprocessing/connection.py", line 368, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+Traceback (most recent call last):
+  File "/home/mmvc/.conda/envs/munachiso/lib/python3.6/multiprocessing/queues.py", line 240, in _feed
+    send_bytes(obj)
+  File "/home/mmvc/.conda/envs/munachiso/lib/python3.6/multiprocessing/connection.py", line 200, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+  File "/home/mmvc/.conda/envs/munachiso/lib/python3.6/multiprocessing/connection.py", line 404, in _send_bytes
+    self._send(header + buf)
+  File "/home/mmvc/.conda/envs/munachiso/lib/python3.6/multiprocessing/connection.py", line 368, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+    main()
+  File "train.py", line 360, in main
+    trainer.training(epoch)
+  File "train.py", line 110, in training
+    loss.backward()
+  File "/home/mmvc/.conda/envs/munachiso/lib/python3.6/site-packages/torch/tensor.py", line 107, in backward
+Traceback (most recent call last):
+  File "/home/mmvc/.conda/envs/munachiso/lib/python3.6/multiprocessing/queues.py", line 240, in _feed
+    send_bytes(obj)
+  File "/home/mmvc/.conda/envs/munachiso/lib/python3.6/multiprocessing/connection.py", line 200, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+  File "/home/mmvc/.conda/envs/munachiso/lib/python3.6/multiprocessing/connection.py", line 404, in _send_bytes
+    self._send(header + buf)
+  File "/home/mmvc/.conda/envs/munachiso/lib/python3.6/multiprocessing/connection.py", line 368, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+    torch.autograd.backward(self, gradient, retain_graph, create_graph)
+  File "/home/mmvc/.conda/envs/munachiso/lib/python3.6/site-packages/torch/autograd/__init__.py", line 93, in backward
+    allow_unreachable=True)  # allow_unreachable flag
+KeyboardInterrupt
